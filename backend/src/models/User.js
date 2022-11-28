@@ -22,7 +22,7 @@ const User = database.define(
       type: DataTypes.STRING(100),
     },
     refreshToken: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING,
     },
   },
   {

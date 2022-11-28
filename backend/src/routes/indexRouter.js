@@ -10,6 +10,7 @@ router.get('/', (req, res) => {
 router.get('/users', UserController.index);
 router.get('/users/:id', UserController.show);
 
-router.post('/register', AuthController.register);
+router.post('/auth/register', AuthController.register);
+router.post('/auth/login', AuthController.login);
 
 module.exports = router;
