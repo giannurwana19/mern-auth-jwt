@@ -9,7 +9,7 @@ const database = new Sequelize({
 });
 
 database.authenticate().catch(err => {
-  console.log(`Erorr connectino ${err}`);
+  console.log(`Error connectino ${err}`);
 });
 
 module.exports = database;

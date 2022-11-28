@@ -5,7 +5,6 @@ require('../models/User');
 try {
   (async () => {
     await database.authenticate();
-    await database.sync();
   })();
   console.log('Connection has been established successfully.');
 } catch (error) {
