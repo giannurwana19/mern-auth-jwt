@@ -12,6 +12,9 @@ const User = database.define(
     name: {
       type: DataTypes.STRING(100),
     },
+    username: {
+      type: DataTypes.STRING(100),
+    },
     email: {
       type: DataTypes.STRING(100),
     },
