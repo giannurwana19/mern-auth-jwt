@@ -35,9 +35,7 @@ const AuthController = {
       where: { username },
     });
 
-    isMatch = bcrypt.compareSync(password, user.password);
-
-    if (!isMatch) {
+    if (!bcrypt.compareSync(password, user.password)) {
       return res.status(400).json({
         success: false,
         message: 'Username atau password salah',
@@ -62,7 +60,7 @@ const AuthController = {
         username: user.username,
         email: user.email,
       },
-      process.env.APP_ACCESS_TOKEN_SECRET,
+      process.env.APP_REFRESH_TOKEN_SECRET,
       {
         expiresIn: '1d',
       }
@@ -76,6 +74,50 @@ const AuthController = {
     });
 
     res.json({ success: true, token: accessToken });
+  },
+
+  refreshToken: async (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+      return res.status(403).json({
+        success: false,
+        message: 'token tidak ditemukan!',
+      });
+    }
+
+    const user = await User.findOne({
+      attributes: ['id', 'name', 'username', 'email', 'password'],
+      where: { refreshToken },
+    });
+
+    if (!user) {
+      return res.sendStatus(403);
+    }
+
+    jwt.verify(
+      refreshToken,
+      process.env.APP_REFRESH_TOKEN_SECRET,
+      (err, decoded) => {
+        if (err) {
+          return res.status(403).json({ success: false, message: err });
+        }
+
+        const accessToken = jwt.sign(
+          {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+          },
+          process.env.APP_ACCESS_TOKEN_SECRET,
+          {
+            expiresIn: '20s',
+          }
+        );
+
+        res.json({ success: true, token: accessToken });
+      }
+    );
   },
 };
 
