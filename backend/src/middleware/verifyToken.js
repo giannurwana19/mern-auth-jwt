@@ -13,7 +13,7 @@ const verifyToken = (req, res, next) => {
     process.env.APP_ACCESS_TOKEN_SECRET,
     (err, decoded) => {
       if (err) {
-        return res.sendStatus(403);
+        return res.status(403).json({ success: false, error: err });
       }
 
       req.username = decoded.username;

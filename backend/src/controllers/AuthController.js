@@ -8,7 +8,8 @@ const AuthController = {
 
     if (password != confirmPassword) {
       return res.json({
-        message: 'Password dan password Confirm tida cocok!',
+        success: false,
+        message: 'Password dan password Confirm tidak cocok!',
       });
     }
 
