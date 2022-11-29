@@ -4,6 +4,12 @@ const User = require('../models/User');
 const { validationResult } = require('express-validator');
 
 const AuthController = {
+  /**
+   *
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
   register: async (req, res) => {
     const errors = validationResult(req);
 
@@ -38,6 +44,12 @@ const AuthController = {
     });
   },
 
+  /**
+   *
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
   login: async (req, res) => {
     const errors = validationResult(req);
 
@@ -103,6 +115,40 @@ const AuthController = {
     res.json({ success: true, token: accessToken });
   },
 
+  /**
+   *
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
+  logout: async (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+      return res.json({ success: true, message: 'logout berhasil' });
+    }
+
+    const user = await User.findOne({
+      where: { refreshToken },
+    });
+
+    if (!user) {
+      return res.json({ success: true, message: 'logout berhasil' });
+    }
+
+    await User.update({ refreshToken: null }, { where: { id: user.id } });
+
+    res.clearCookie('refreshToken');
+
+    return res.json({ success: true, message: 'logout berhasil' });
+  },
+
+  /**
+   *
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
   refreshToken: async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
 
