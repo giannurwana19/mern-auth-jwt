@@ -1,9 +1,19 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
+const { validationResult } = require('express-validator');
 
 const AuthController = {
   register: async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        errors: errors.array(),
+      });
+    }
+
     let { name, username, email, password, confirmPassword } = req.body;
 
     if (password != confirmPassword) {
@@ -29,12 +39,28 @@ const AuthController = {
   },
 
   login: async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        errors: errors.array(),
+      });
+    }
+
     let { username, password } = req.body;
 
     const user = await User.findOne({
       attributes: ['id', 'name', 'username', 'email', 'password'],
       where: { username },
     });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Username atau password salah',
+      });
+    }
 
     if (!bcrypt.compareSync(password, user.password)) {
       return res.status(400).json({
