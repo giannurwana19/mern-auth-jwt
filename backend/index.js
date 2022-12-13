@@ -9,7 +9,7 @@ const app = express();
 const indexRouter = require('./src/routes/indexRouter');
 
 // middleware
-app.use(cors());
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(fileUpload());
